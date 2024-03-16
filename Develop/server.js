@@ -54,6 +54,7 @@ function questionList() {
           break;
 
         case "Add Role":
+          addRole();
           break;
 
         case "View All Departments":
@@ -81,6 +82,9 @@ function questionList() {
           break;
 
         case "Delete a Role":
+          deleteRole().then(() => {
+            questionList();
+          });
           break;
 
         case "Delete an Employee":
@@ -160,7 +164,6 @@ async function addEmployee2(response) {
       newEmpRoleId[0][0].id,
       newManId[0][0].id,
     ];
-    console.log(empParams);
     await db.query(insertEmp, empParams, (err, result) => {
       console.log(
         `You have added ${response.first_name} ${response.last_name} to the database.`
@@ -190,8 +193,61 @@ async function viewAllRoles() {
   }
 }
 
-function addRole() {
+async function addRole() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "newRole",
+          message: "Enter the title of the role you wish to add.",
+        },
+        {
+          type: "input",
+          name: "newSalary",
+          message: "Enter the salary for this role",
+        },
+        {
+          type: "list",
+          name: "department",
+          message: "Which department does this role belong to?",
+          choices: await displayDepartments(),
+        },
+        {
+          type: "list",
+          name: "isManager",
+          message: "Will this role be a manager?",
+          choices: ["yes", "no"],
+        },
+      ])
+      .then((response) => {
+        let isItManager = 0;
+        if (response.isManager === "yes") {
+          isItManager = 1;
+        }
+        addRole2(response, isItManager);
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function addRole2(response, isItManager) {
+  try {
+    const depNameQuery = `SELECT id FROM department WHERE name='${response.department}'`;
+    const depName = await db.query(depNameQuery);
+
+    const insertRoleQuery = `INSERT INTO role (title, salary, department_id, is_manager) VALUES (?,?,?,?)`;
+    const insertRoleParams = [
+      response.newRole,
+      parseInt(response.newSalary),
+      depName[0][0].id,
+      isItManager,
+    ];
+    await db.query(insertRoleQuery, insertRoleParams, (err, result) => {
+      console.log(`You have added ${response.newRole} to the database.`);
+    });
+    questionList();
   } catch (error) {
     console.error(error);
   }
@@ -274,13 +330,26 @@ async function deleteDepartment() {
   }
 }
 
-function deleteRole() {
+async function deleteRole() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "roledelete",
+          message: "Select the role you wish to delete.",
+          choices: await displayRoles(),
+        },
+      ])
+      .then((response) => {
+        db.query(`DELETE FROM role WHERE title='${response.roledelete}'`);
+      });
   } catch (error) {
     console.error(error);
   }
 }
 
+//working
 async function deleteEmployee() {
   try {
     await inquirer
