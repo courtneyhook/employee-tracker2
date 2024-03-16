@@ -26,7 +26,7 @@ INSERT INTO role (department_id, title, salary, is_manager)
            (6, "Resource Teacher", 60000),/*115*/
            (6, "Paraprofessional", 35000),/*116*/
            (7, "Teacher", 60000),/*117*/
-           (8, "Business Supervisor", 60000),/*118*/
+           (8, "Business Supervisor", 60000, 1),/*118*/
            (8, "Payroll", 55000),/*119*/
            (8, "Human Resources", 55000),/*120*/
            (8, "Secretary", 50000);/*121*/
