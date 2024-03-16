@@ -84,6 +84,9 @@ function questionList() {
           break;
 
         case "Delete an Employee":
+          deleteEmployee().then(() => {
+            questionList();
+          });
           break;
 
         case "View Budget":
@@ -278,8 +281,22 @@ function deleteRole() {
   }
 }
 
-function deleteEmployee() {
+async function deleteEmployee() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "deleteEmployee",
+          message: "Select the employee you would like to delete.",
+          choices: await displayEmployees(),
+        },
+      ])
+      .then((response) => {
+        db.query(
+          `DELETE FROM employee WHERE CONCAT(first_name, ' ', last_name)='${response.deleteEmployee}'`
+        );
+      });
   } catch (error) {
     console.error(error);
   }
@@ -308,8 +325,16 @@ async function displayRoles() {
   }
 }
 
-function displayEmployees() {
+async function displayEmployees() {
   try {
+    const empListQuery = `SELECT CONCAT(first_name, ' ', last_name) AS name FROM employee`;
+    const empList = await db.query(empListQuery);
+    const empListResults = empList[0];
+    let employees = [];
+    for (let el = 0; el < empListResults.length; el++) {
+      employees.push(empListResults[el].name);
+    }
+    return employees;
   } catch (error) {
     console.error(error);
   }
