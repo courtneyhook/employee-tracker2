@@ -62,6 +62,9 @@ function questionList() {
           break;
 
         case "Add Department":
+          addDepartment().then(() => {
+            questionList();
+          });
           break;
 
         case "Update Employee Manager":
@@ -102,9 +105,19 @@ async function viewAllEmployees() {
   }
 }
 
-function addEmployee() {}
+function addEmployee() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function updateEmployeeRole() {}
+function updateEmployeeRole() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 //working
 async function viewAllRoles() {
@@ -117,7 +130,12 @@ async function viewAllRoles() {
   }
 }
 
-function addRole() {}
+function addRole() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 //working
 async function viewAllDepartments() {
@@ -130,35 +148,114 @@ async function viewAllDepartments() {
   }
 }
 
-function addDepartment() {}
+//working
+async function addDepartment() {
+  try {
+    await inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "newDepartment",
+          message: "Please enter the name of the new department.",
+        },
+      ])
+      .then((response) => {
+        const addDeptQuery = `INSERT INTO department (name) VALUES (?)`;
+        const addDeptParam = response.newDepartment;
+        db.query(addDeptQuery, [addDeptParam], (err, result) => {
+          console.log(`You have added ${response.newDepartment}.`);
+        });
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function updateEmployeeManager() {}
+function updateEmployeeManager() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function viewEmployeesByManager() {}
+function viewEmployeesByManager() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function viewEmployeesByDepartment() {}
+function viewEmployeesByDepartment() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function deleteDepartment() {}
+function deleteDepartment() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function deleteRole() {}
+function deleteRole() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function deleteEmployee() {}
+function deleteEmployee() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function viewBudget() {}
+function viewBudget() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 //helper functions
-async function getRoleList() {
-  //count the number of departments
-  const roleList = `SELECT id, title, department_id, is_manager FROM role`;
-  const roleListQuery = await db.query(roleList);
+async function displayRoles() {
+  try {
+    //count the number of departments
+    const roleList = `SELECT id, title, department_id, is_manager FROM role`;
+    const roleListQuery = await db.query(roleList);
 
-  const roleListResults = roleListQuery[0].map((employee) => ({
-    id: employee.id,
-    name: employee.title,
-    dept_id: employee.department_id,
-    is_manager: employee.is_manager,
-  }));
-  return roleListResults;
+    const roleListResults = roleListQuery[0].map((employee) => ({
+      name: employee.title,
+    }));
+
+    return roleListResults;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function displayEmployees() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function displayManagers() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function displayDepartments() {
+  try {
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 questionList();
