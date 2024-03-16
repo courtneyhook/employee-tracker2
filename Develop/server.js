@@ -19,7 +19,6 @@ function questionList() {
           "Add Role",
           "View All Departments",
           "Add Department",
-          "Update Employee Manager",
           "View Employees by Manager",
           "View Employees by Department",
           "Delete a Department",
@@ -97,6 +96,9 @@ function questionList() {
           break;
 
         case "View Budget":
+          viewBudget().then(() => {
+            questionList();
+          });
           break;
 
         //working
@@ -457,8 +459,17 @@ async function deleteEmployee() {
   }
 }
 
-function viewBudget() {
+async function viewBudget() {
   try {
+    const salaryListQuery = `SELECT employee.id, role.salary FROM employee INNER JOIN role ON employee.role_id=role.id`;
+    const salaryList = await db.query(salaryListQuery);
+    let salary = 0;
+    for (let sl = 0; sl < salaryList[0].length; sl++) {
+      salary += parseInt(salaryList[0][sl].salary);
+    }
+    const formatSalary = await db.query(`SELECT format(${salary}, 0) as total`);
+    const formatSal = formatSalary[0][0].total;
+    console.log(`The total current budget is $${formatSal}.`);
   } catch (error) {
     console.error(error);
   }
