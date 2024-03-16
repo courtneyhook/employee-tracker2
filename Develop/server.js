@@ -56,6 +56,9 @@ function questionList() {
           break;
 
         case "View All Departments":
+          viewAllDepartments().then(() => {
+            questionList();
+          });
           break;
 
         case "Add Department":
@@ -116,7 +119,16 @@ async function viewAllRoles() {
 
 function addRole() {}
 
-function viewAllDepartments() {}
+//working
+async function viewAllDepartments() {
+  try {
+    const viewDepartmentQuery = `SELECT id, name FROM department`;
+    const viewDepartmentList = await db.query(viewDepartmentQuery);
+    console.table(viewDepartmentList[0]);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 function addDepartment() {}
 
