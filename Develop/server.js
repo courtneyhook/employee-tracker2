@@ -41,6 +41,7 @@ function questionList() {
           break;
 
         case "Add Employee":
+          addEmployee();
           break;
 
         case "Update Employee Role":
@@ -108,8 +109,61 @@ async function viewAllEmployees() {
   }
 }
 
-function addEmployee() {
+async function addEmployee() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "first_name",
+          message: "Enter the first name of the employee.",
+        },
+        {
+          type: "input",
+          name: "last_name",
+          message: "Enter the last name of the employee.",
+        },
+        {
+          type: "list",
+          name: "newRole",
+          message: "What is the employee's role?",
+          choices: await displayRoles(),
+        },
+        {
+          type: "list",
+          name: "newManager",
+          message: "Who is the employee's manager?",
+          choices: await displayManagers(),
+        },
+      ])
+      .then((response) => {
+        addEmployee2(response);
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function addEmployee2(response) {
+  try {
+    const newRoleQuery = `SELECT id FROM role WHERE title='${response.newRole}'`;
+    const newEmpRoleId = await db.query(newRoleQuery);
+    const manId = `SELECT id FROM employee WHERE CONCAT(first_name, ' ', last_name)='${response.newManager}'`;
+    const newManId = await db.query(manId);
+    const insertEmp = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
+    const empParams = [
+      response.first_name,
+      response.last_name,
+      newEmpRoleId[0][0].id,
+      newManId[0][0].id,
+    ];
+    console.log(empParams);
+    await db.query(insertEmp, empParams, (err, result) => {
+      console.log(
+        `You have added ${response.first_name} ${response.last_name} to the database.`
+      );
+    });
+    questionList();
   } catch (error) {
     console.error(error);
   }
@@ -241,14 +295,14 @@ function viewBudget() {
 //helper functions
 async function displayRoles() {
   try {
-    //count the number of departments
     const roleList = `SELECT id, title, department_id, is_manager FROM role`;
     const roleListQuery = await db.query(roleList);
-
-    const roleListResults = roleListQuery[0].map((employee) => ({
-      name: employee.title,
-    }));
-    return roleListResults;
+    const roleListResults = roleListQuery[0];
+    let roles = [];
+    for (let rl = 0; rl < roleListResults.length; rl++) {
+      roles.push(roleListResults[rl].title);
+    }
+    return roles;
   } catch (error) {
     console.error(error);
   }
@@ -261,8 +315,16 @@ function displayEmployees() {
   }
 }
 
-function displayManagers() {
+async function displayManagers() {
   try {
+    const managerList = `SELECT role.id, CONCAT(first_name, ' ', last_name) AS name FROM employee LEFT JOIN role ON employee.role_id=role.id WHERE role.is_manager=1`;
+    const managerListQuery = await db.query(managerList);
+    const managerListResults = managerListQuery[0];
+    let managers = [];
+    for (let ml = 0; ml < managerListResults.length; ml++) {
+      managers.push(managerListResults[ml].name);
+    }
+    return managers;
   } catch (error) {
     console.error(error);
   }
