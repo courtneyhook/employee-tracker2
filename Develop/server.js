@@ -70,14 +70,12 @@ function questionList() {
           });
           break;
 
-        case "Update Employee Manager":
-          break;
-
         case "View Employees by Manager":
           viewEmployeesByManager();
           break;
 
         case "View Employees by Department":
+          viewEmployeesByDepartment();
           break;
 
         case "Delete a Department":
@@ -324,13 +322,6 @@ async function addDepartment() {
   }
 }
 
-function updateEmployeeManager() {
-  try {
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 async function viewEmployeesByManager() {
   try {
     await inquirer
@@ -369,13 +360,40 @@ async function viewEmployeesByManager2(response) {
   }
 }
 
-function viewEmployeesByDepartment() {
+async function viewEmployeesByDepartment() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "viewDepartment",
+          message: "Select a Department",
+          choices: await displayDepartments(),
+        },
+      ])
+      .then((response) => {
+        viewEmployeesByDepartment2(response);
+      });
   } catch (error) {
     console.error(error);
   }
 }
 
+async function viewEmployeesByDepartment2(response) {
+  try {
+    const getDep = await db.query(
+      `SELECT id from department WHERE name='${response.viewDepartment}'`
+    );
+    const depNum = getDep[0][0].id;
+    const depQuery = await db.query(
+      `SELECT employee.id, first_name, last_name, title, salary, department.name AS department, employee.manager_id FROM employee INNER JOIN role ON employee.role_id=role.id INNER JOIN department ON role.department_id=department.id WHERE department.id='${depNum}';`
+    );
+    console.table(depQuery[0]);
+    questionList();
+  } catch (error) {
+    console.error(error);
+  }
+}
 //working
 async function deleteDepartment() {
   try {
