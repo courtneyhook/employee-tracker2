@@ -45,6 +45,7 @@ function questionList() {
           break;
 
         case "Update Employee Role":
+          updateEmployeeRole();
           break;
 
         case "View All Roles":
@@ -179,8 +180,40 @@ async function addEmployee2(response) {
   }
 }
 
-function updateEmployeeRole() {
+async function updateEmployeeRole() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employee",
+          message: "Select an employee to update.",
+          choices: await displayEmployees(),
+        },
+        {
+          type: "list",
+          name: "newRole",
+          message: "Select a new role for this employee.",
+          choices: await displayRoles(),
+        },
+      ])
+      .then((response) => {
+        updateEmployeeRole2(response);
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function updateEmployeeRole2(response) {
+  try {
+    const roleId = await db.query(
+      `SELECT id FROM role WHERE title='${response.newRole}'`
+    );
+    await db.query(
+      `UPDATE employee SET role_id = "${roleId[0][0].id}" WHERE CONCAT(first_name, ' ', last_name)='${response.employee}'`
+    );
+    questionList();
   } catch (error) {
     console.error(error);
   }
