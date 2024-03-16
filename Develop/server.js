@@ -74,6 +74,9 @@ function questionList() {
           break;
 
         case "Delete a Department":
+          deleteDepartment().then(() => {
+            questionList();
+          });
           break;
 
         case "Delete a Role":
@@ -192,8 +195,23 @@ function viewEmployeesByDepartment() {
   }
 }
 
-function deleteDepartment() {
+//working
+async function deleteDepartment() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "departmentdelete",
+          message: "Select the department you wish to delete.",
+          choices: await displayDepartments(),
+        },
+      ])
+      .then((response) => {
+        db.query(
+          `DELETE FROM department WHERE name='${response.departmentdelete}'`
+        );
+      });
   } catch (error) {
     console.error(error);
   }
@@ -230,7 +248,6 @@ async function displayRoles() {
     const roleListResults = roleListQuery[0].map((employee) => ({
       name: employee.title,
     }));
-
     return roleListResults;
   } catch (error) {
     console.error(error);
@@ -251,8 +268,17 @@ function displayManagers() {
   }
 }
 
-function displayDepartments() {
+//working
+async function displayDepartments() {
   try {
+    const deptListQuery = `SELECT id, name from department`;
+    const deptList = await db.query(deptListQuery);
+    const deptListResults = deptList[0];
+    let listDept = [];
+    for (let dl = 0; dl < deptListResults.length; dl++) {
+      listDept.push(deptListResults[dl].name);
+    }
+    return listDept;
   } catch (error) {
     console.error(error);
   }
