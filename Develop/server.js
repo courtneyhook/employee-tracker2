@@ -47,6 +47,9 @@ function questionList() {
           break;
 
         case "View All Roles":
+          viewAllRoles().then(() => {
+            questionList();
+          });
           break;
 
         case "Add Role":
@@ -100,7 +103,16 @@ function addEmployee() {}
 
 function updateEmployeeRole() {}
 
-function viewAllRoles() {}
+//working
+async function viewAllRoles() {
+  try {
+    const viewRoleQuery = `SELECT role.id, title, department.name AS department, salary FROM role INNER JOIN department ON role.department_id=department.id`;
+    const viewRoleList = await db.query(viewRoleQuery);
+    console.table(viewRoleList[0]);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 function addRole() {}
 
