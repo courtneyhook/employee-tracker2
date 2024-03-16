@@ -72,6 +72,10 @@ function questionList() {
         case "Update Employee Manager":
           break;
 
+        case "View Employees by Manager":
+          viewEmployeesByManager();
+          break;
+
         case "View Employees by Department":
           break;
 
@@ -294,8 +298,39 @@ function updateEmployeeManager() {
   }
 }
 
-function viewEmployeesByManager() {
+async function viewEmployeesByManager() {
   try {
+    await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "viewManager",
+          message: "Select a Manager",
+          choices: await displayManagers(),
+        },
+      ])
+      .then((response) => {
+        viewEmployeesByManager2(response);
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function viewEmployeesByManager2(response) {
+  try {
+    const manID = await db.query(
+      `SELECT id from employee WHERE CONCAT(first_name, ' ', last_name)='${response.viewManager}'`
+    );
+    const managerList = await db.query(
+      `SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employee WHERE manager_id=${manID[0][0].id}`
+    );
+    if (managerList[0].length === 0) {
+      console.log(`\n\n${response.viewManager} has no active employees\n`);
+    } else {
+      console.table(managerList[0]);
+    }
+    questionList();
   } catch (error) {
     console.error(error);
   }
