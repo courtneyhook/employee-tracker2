@@ -31,7 +31,7 @@ INSERT INTO role (department_id, title, salary, is_manager)
            (8, "Human Resources", 55000, 0),/*120*/
            (8, "Secretary", 50000, 0);/*121*/
 
-INSERT INTO employee(first_name, last_name, role_id, manager_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
     VALUES ("Jim", "Glenn", 101, null),/*1001*/
            ("Nick", "Golden", 102, 1001),/*1002*/
            ("Lacy", "Wakefield", 103, 1001),/*1003*/
@@ -43,7 +43,7 @@ INSERT INTO employee(first_name, last_name, role_id, manager_id)
            ("Les", "Dysart", 109, 1001),/*1009*/
            ("Shawna", "Tyrrell", 113, 1001),/*1010*/
            ("Courtney", "Hook", 117, 1002),/*1011*/
-           ("Kristy", "Lindsey",17, 1002),/*1012*/
+           ("Kristy", "Lindsey",  117, 1002),/*1012*/
            ("Marlie", "Sheppard", 117, 1002),/*1013*/
            ("Laura", "Wood", 117, 1002),/*1014*/
            ("Violet", "Brawley", 117, 1002),/*1015*/
