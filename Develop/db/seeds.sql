@@ -11,25 +11,25 @@ INSERT INTO department (name)
 INSERT INTO role (department_id, title, salary, is_manager)
     VALUES (1, "Superintendent", 150000, 1),/*101*/
            (1, "Principal", 120000, 1),/*102*/
-           (1, "Assisstant Principal", 110000),/*103*/
+           (1, "Assisstant Principal", 110000, 0),/*103*/
            (2, "Maintenance Supervisor", 60000, 1),/*104*/
-           (2, "General Maintenance", 45000),/*105*/
-           (2, "Custodian", 35000),/*106*/
+           (2, "General Maintenance", 45000, 0),/*105*/
+           (2, "Custodian", 35000, 0),/*106*/
            (3, "Technology Supervisor", 100000, 1),/*107*/
-           (3, "IT", 90000),/*108*/
+           (3, "IT", 90000, 0),/*108*/
            (4, "Bus Supervisor", 55000, 1),/*109*/
-           (4, "Bus Driver", 40000),/*110*/
+           (4, "Bus Driver", 40000, 0),/*110*/
            (5, "Kitchen Supervisor", 60000, 1),/*111*/
-           (5, "Cook", 35000),/*112*/
+           (5, "Cook", 35000, 0),/*112*/
            (6, "Special Services Coordinator", 100000, 1),/*113*/
-           (6, "Gifted Teacher", 60000),/*114*/
-           (6, "Resource Teacher", 60000),/*115*/
-           (6, "Paraprofessional", 35000),/*116*/
-           (7, "Teacher", 60000),/*117*/
+           (6, "Gifted Teacher", 60000, 0),/*114*/
+           (6, "Resource Teacher", 60000, 0),/*115*/
+           (6, "Paraprofessional", 35000, 0),/*116*/
+           (7, "Teacher", 60000, 0),/*117*/
            (8, "Business Supervisor", 60000, 1),/*118*/
-           (8, "Payroll", 55000),/*119*/
-           (8, "Human Resources", 55000),/*120*/
-           (8, "Secretary", 50000);/*121*/
+           (8, "Payroll", 55000, 0),/*119*/
+           (8, "Human Resources", 55000, 0),/*120*/
+           (8, "Secretary", 50000, 0);/*121*/
 
 INSERT INTO employee(first_name, last_name, role_id, manager_id)
     VALUES ("Jim", "Glenn", 101, null),/*1001*/
@@ -73,5 +73,5 @@ INSERT INTO employee(first_name, last_name, role_id, manager_id)
            ("Jasmine", "Hubble", 116, 1010),/*1039*/
            ("Cheryl", "Mosby", 116, 1010),/*1040*/
            ("Ethan", "Nelson", 107, 1001),/*1041*/
-           ("Jason", "Boatman", 108, 1041)/*1042*/
+           ("Jason", "Boatman", 108, 1041);/*1042*/
 
